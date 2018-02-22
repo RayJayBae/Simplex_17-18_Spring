@@ -1,8 +1,13 @@
 #include "AppClass.h"
+
+int curRotue;
+
 void Application::InitVariables(void)
 {
 	//Change this to your name and email
-	m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu";
+	m_sProgrammer = "Raymond Stempel - rs6571@g.rit.edu";
+
+	curRotue = 0;
 
 	//Set the position and target of the camera
 	m_pCameraMngr->SetPositionTargetAndUp(vector3(5.0f,3.0f,15.0f), ZERO_V3, AXIS_Y);
@@ -51,19 +56,45 @@ void Application::Display(void)
 	static uint uClock = m_pSystem->GenClock(); //generate a new clock for that timer
 	fTimer += m_pSystem->GetDeltaTime(uClock); //get the delta time for that timer
 
-	//calculate the current position
-	vector3 v3CurrentPos;
-	
-
-
-
 
 	//your code goes here
-	v3CurrentPos = vector3(0.0f, 0.0f, 0.0f);
 	//-------------------
+
+	float pathTime = 2.0;
+
+	float perPath = fTimer / 2.0;
+	if (perPath > 1.0f) {
 	
+		perPath = 1.0f;
+	
+	}
+	if (fTimer > 2.0) {
+	
+		fTimer = 0;
+	
+	}
 
+	vector3 vStart = m_stopsList[curRotue];
+	vector3 vEnd;
 
+	if (curRotue + 1 <= m_stopsList.size()) {
+	
+		vEnd = m_stopsList[curRotue + 1];
+	
+	}
+	else
+	{
+
+		curRotue = 0;
+		vEnd = m_stopsList[curRotue];
+
+	}
+
+	//calculate the current position
+	vector3 v3CurrentPos;
+	v3CurrentPos = vector3(0.0f, 0.0f, 0.0f);
+
+	v3CurrentPos = glm::lerp(vStart, vEnd, perPath);
 	
 	matrix4 m4Model = glm::translate(v3CurrentPos);
 	m_pModel->SetModelMatrix(m4Model);
